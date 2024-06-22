@@ -13,21 +13,23 @@ import java.nio.file.Files;
 
 public class Reconocedor {
     //atributos
-    private final String API_KEY;
-    private AssemblyAI cliente;
+    private final String API_KEY=Dotenv.load().get("API_KEY");
+
+    private AssemblyAI cliente= AssemblyAI.builder()
+            .apiKey(API_KEY)
+            .build();
     private TranscriptOptionalParams parametros;
 
     //constructores
 
+    public Reconocedor()
+    {
+        setParametros(null);
+    }
+
     public Reconocedor(String idioma)
     {
-        API_KEY=Dotenv.load().get("API_KEY");
-
-        cliente = AssemblyAI.builder()
-                .apiKey(API_KEY)
-                .build();
-
-        setParametros(idioma);
+       setParametros(idioma);
     }
 
     //get y set
