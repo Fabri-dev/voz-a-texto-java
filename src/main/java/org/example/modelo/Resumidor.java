@@ -2,6 +2,8 @@ package org.example.modelo;
 
 import com.assemblyai.api.AssemblyAI;
 import com.assemblyai.api.resources.lemur.requests.LemurTaskParams;
+import com.assemblyai.api.resources.lemur.types.LemurTaskResponse;
+import com.assemblyai.api.resources.transcripts.types.Transcript;
 import io.github.cdimascio.dotenv.Dotenv;
 
 import java.util.List;
@@ -12,7 +14,7 @@ public class Resumidor {
     private AssemblyAI cliente= AssemblyAI.builder()
             .apiKey(Dotenv.load().get("API_KEY"))
             .build();
-    private LemurTaskParams parametrosIA;
+
     //constructores
 
     public Resumidor(){
@@ -24,13 +26,19 @@ public class Resumidor {
 
     //get y set
 
-    public void setParametrosIA() {
-        parametrosIA= LemurTaskParams.builder()
-                .prompt(prompt)
-                .transcriptIds(List.of(transcript.getId()))
-                .build();
+    public String getPrompt() {
+        return prompt;
     }
 
-
     //metodos
+    public LemurTaskResponse obtenerResumenDeTranscripcion(Transcript transcripcion) {
+        LemurTaskParams parametrosIA= LemurTaskParams.builder()
+                .prompt(prompt)
+                .transcriptIds(List.of(transcripcion.getId()))
+                .build();
+
+        return cliente.lemur().task(parametrosIA);
+
+
+    }
 }

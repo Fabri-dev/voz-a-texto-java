@@ -82,7 +82,7 @@ public class Reconocedor {
 
         System.out.println("Escuchando...");
 
-        //escucho el audio con los parametros enviados, y retorno toda la transcripcion
+        //escucho el audio con los parametros enviados, y retorno toda la transcripcion, con la ID, para poder resumirlo
         transcript = cliente.transcripts().transcribe(url,parametros);
 
         //si sucede un error, obtenemos el estado y el mensaje

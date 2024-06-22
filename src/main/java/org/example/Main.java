@@ -1,8 +1,10 @@
 package org.example;
 
+import com.assemblyai.api.resources.lemur.types.LemurTaskResponse;
 import com.assemblyai.api.resources.transcripts.types.Transcript;
 import org.example.Excepciones.UrlInvalidaException;
 import org.example.modelo.Reconocedor;
+import org.example.modelo.Resumidor;
 
 import java.io.IOException;
 
@@ -14,10 +16,14 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args){
 
-        Reconocedor reconocedor= new Reconocedor("es");
+        Reconocedor reconocedor= new Reconocedor("en");
         Transcript texto= null;
+        Resumidor resumidor= new Resumidor();
+        LemurTaskResponse respuesta= null;
         try {
-            texto = reconocedor.vozATranscript("src/main/resources/WhatsApp Ptt 2024-06-21 at 7.53.40 AM.ogg");
+            texto = reconocedor.vozATranscript("src/main/resources/prueba1.wav");
+            respuesta= resumidor.obtenerResumenDeTranscripcion(texto);
+
         } catch (UrlInvalidaException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -26,5 +32,6 @@ public class Main {
 
         assert texto != null;
         System.out.println(texto.getText());
+        System.out.println(respuesta);
     }
 }
