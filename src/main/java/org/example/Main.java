@@ -1,7 +1,8 @@
 package org.example;
 
-import com.assemblyai.api.resources.lemur.types.LemurTaskResponse;
-import com.assemblyai.api.resources.transcripts.types.Transcript;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import okhttp3.OkHttp;
+import okhttp3.OkHttpClient;
 import org.example.Excepciones.UrlInvalidaException;
 import org.example.modelo.Reconocedor;
 import org.example.modelo.Resumidor;
@@ -17,21 +18,25 @@ public class Main {
     public static void main(String[] args){
 
         Reconocedor reconocedor= new Reconocedor("en");
-        Transcript texto= null;
-        Resumidor resumidor= new Resumidor();
-        LemurTaskResponse respuesta= null;
+        String texto= null;
+        Resumidor resumidor= new Resumidor(reconocedor.getIdioma());
+        String respuesta= null;
         try {
-            texto = reconocedor.vozATranscript("src/main/resources/prueba1.wav");
-            respuesta= resumidor.obtenerResumenDeTranscripcion(texto);
+            texto = reconocedor.vozATexto("src/main/resources/pruebaEn4.mp3");
+           respuesta= resumidor.resumirTexto(texto);
 
         } catch (UrlInvalidaException e) {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (UnirestException e) {
+            e.printStackTrace();
         }
 
         assert texto != null;
-        System.out.println(texto.getText());
+        System.out.println(texto);
         System.out.println(respuesta);
+
+
     }
 }

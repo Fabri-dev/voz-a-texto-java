@@ -1,27 +1,32 @@
 package org.example.modelo;
 
-import com.assemblyai.api.AssemblyAI;
-import com.assemblyai.api.resources.lemur.requests.LemurTaskParams;
-import com.assemblyai.api.resources.lemur.types.LemurTaskResponse;
-import com.assemblyai.api.resources.transcripts.types.Transcript;
-import io.github.cdimascio.dotenv.Dotenv;
 
-import java.util.List;
+
+import com.mashape.unirest.http.HttpResponse;
+import com.mashape.unirest.http.JsonNode;
+import com.mashape.unirest.http.Unirest;
+import com.mashape.unirest.http.exceptions.UnirestException;
+import io.github.cdimascio.dotenv.Dotenv;
 
 public class Resumidor {
     //atributos
     private String prompt;
-    private AssemblyAI cliente= AssemblyAI.builder()
-            .apiKey(Dotenv.load().get("API_KEY"))
-            .build();
+    private static final String IA_API_KEY= Dotenv.load().get("IA_API_KEY");
 
     //constructores
 
-    public Resumidor(){
-        prompt="Provide a brief summary of the transcript.";
-    }
-    public Resumidor(String prompt){
-        this.prompt= prompt;
+    public Resumidor(String idioma) {
+
+        if (idioma.equals("es"))
+        {
+            prompt="Proporcione un resumen del texto recibido. El texto es el siguiente:";
+
+        }
+        if (idioma.equals("en"))
+        {
+
+            prompt="Provide a summary of the text received. The text is the following: ";
+        }
     }
 
     //get y set
@@ -31,14 +36,19 @@ public class Resumidor {
     }
 
     //metodos
-    public LemurTaskResponse obtenerResumenDeTranscripcion(Transcript transcripcion) {
-        LemurTaskParams parametrosIA= LemurTaskParams.builder()
-                .prompt(prompt)
-                .transcriptIds(List.of(transcripcion.getId()))
-                .build();
 
-        return cliente.lemur().task(parametrosIA);
+    public String resumirTexto(String textoAResumir) throws UnirestException {
 
+        HttpResponse<String> response = Unirest.post("https://api-inference.huggingface.co/models/mistralai/Mixtral-8x7B-Instruct-v0.1")
 
+                .header("Authorization", "Bearer " + IA_API_KEY)
+                .header("Content-Type", "application/json")
+                .body("{\"inputs\":\"" + prompt + textoAResumir + "\"}")
+                .asString();
+
+        return response.getBody();
     }
+
+
+
 }
