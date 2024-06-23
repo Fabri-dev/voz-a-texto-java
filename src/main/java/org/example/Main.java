@@ -3,6 +3,7 @@ package org.example;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import okhttp3.OkHttp;
 import okhttp3.OkHttpClient;
+import org.example.Enums.EIdioma;
 import org.example.Excepciones.UrlInvalidaException;
 import org.example.modelo.Reconocedor;
 import org.example.modelo.Resumidor;
@@ -17,7 +18,7 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args){
 
-        Reconocedor reconocedor= new Reconocedor("en");
+        Reconocedor reconocedor= new Reconocedor(EIdioma.EN);
         String texto= null;
         Resumidor resumidor= new Resumidor(reconocedor.getIdioma());
         String respuesta= null;

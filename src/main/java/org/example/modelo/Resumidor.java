@@ -7,6 +7,7 @@ import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.github.cdimascio.dotenv.Dotenv;
+import org.example.Enums.EIdioma;
 
 public class Resumidor {
     //atributos
@@ -15,7 +16,7 @@ public class Resumidor {
 
     //constructores
 
-    public Resumidor(String idioma) {
+    public Resumidor(EIdioma idioma) {
 
         if (idioma.equals("es"))
         {
@@ -46,9 +47,15 @@ public class Resumidor {
                 .body("{\"inputs\":\"" + prompt + textoAResumir + "\"}")
                 .asString();
 
-        return response.getBody();
+        return limpiarRespuesta(prompt+textoAResumir,response.getBody());
     }
 
+    private String limpiarRespuesta(String texto,String stringALimpiar){
+
+        stringALimpiar = stringALimpiar.replace(texto,"");
+
+        return stringALimpiar;
+    }
 
 
 }
