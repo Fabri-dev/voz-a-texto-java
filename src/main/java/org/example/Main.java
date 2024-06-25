@@ -4,11 +4,13 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import okhttp3.OkHttp;
 import okhttp3.OkHttpClient;
 import org.example.Enums.EIdioma;
-import org.example.Excepciones.UrlInvalidaException;
+
 import org.example.modelo.Reconocedor;
 import org.example.modelo.Resumidor;
 
+import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 
 /*
     tipos de archivos de audios que soporta:
@@ -18,24 +20,36 @@ import java.io.IOException;
 public class Main {
     public static void main(String[] args){
 
-        Reconocedor reconocedor= new Reconocedor(EIdioma.EN);
         String texto= null;
-        Resumidor resumidor= new Resumidor(reconocedor.getIdioma());
         String respuesta= null;
-        try {
-            texto = reconocedor.vozATexto("src/main/resources/pruebaEn4.mp3");
-           respuesta= resumidor.resumirTexto(texto);
 
-        } catch (UrlInvalidaException e) {
+
+        //Se debe especificar anteriormente el idioma (ES o EN), si el idioma es otro, elija OTHER
+        Reconocedor reconocedor= new Reconocedor(EIdioma.ES);
+        Resumidor resumidor= new Resumidor(reconocedor.getIdioma());
+
+        try {
+            texto = reconocedor.vozATexto(new File("src/main/resources/pruebaEs4.ogg"));
+
+            if (!(texto == "error") || !(texto == "El archivo recibido no existe\n"))
+            {
+                respuesta= resumidor.resumirTexto(texto);
+
+            }
+
+
+        }
+        catch (IOException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (UnirestException e) {
+        }
+        catch (UnirestException e) {
             e.printStackTrace();
         }
 
-        assert texto != null;
+
+        System.out.println("reconocedor: ");
         System.out.println(texto);
+        System.out.println("resumen: ");
         System.out.println(respuesta);
 
 

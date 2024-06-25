@@ -1,9 +1,6 @@
 package org.example.modelo;
 
-
-
 import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import io.github.cdimascio.dotenv.Dotenv;
@@ -18,16 +15,18 @@ public class Resumidor {
 
     public Resumidor(EIdioma idioma) {
 
-        if (idioma.equals("es"))
+        if (idioma == EIdioma.ES)
         {
-            prompt="Proporcione un resumen del texto recibido. El texto es el siguiente:";
+            prompt="Proporcione un resumen del texto recibido. El texto es el siguiente: ";
 
         }
-        if (idioma.equals("en"))
+        else //(idioma == EIdioma.EN)
         {
 
             prompt="Provide a summary of the text received. The text is the following: ";
         }
+
+
     }
 
     //get y set
@@ -47,12 +46,23 @@ public class Resumidor {
                 .body("{\"inputs\":\"" + prompt + textoAResumir + "\"}")
                 .asString();
 
+
+
+
         return limpiarRespuesta(prompt+textoAResumir,response.getBody());
     }
 
     private String limpiarRespuesta(String texto,String stringALimpiar){
 
-        stringALimpiar = stringALimpiar.replace(texto,"");
+        stringALimpiar = stringALimpiar
+                .replace(texto,"")
+                .replace("[", "")
+                .replace("]", "")
+                .replace("{", "")
+                .replace("}", "")
+                .replace("\\n", "");
+
+        //stringALimpiar.replaceAll("[\\[\\]{}\\\\n]", ""); tambien se puede utilizar este metodo
 
         return stringALimpiar;
     }
