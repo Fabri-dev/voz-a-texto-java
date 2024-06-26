@@ -25,13 +25,13 @@ public class Main {
 
 
         //Se debe especificar anteriormente el idioma (ES o EN), si el idioma es otro, elija OTHER
-        Reconocedor reconocedor= new Reconocedor(EIdioma.ES);
+        Reconocedor reconocedor= new Reconocedor(EIdioma.EN);
         Resumidor resumidor= new Resumidor(reconocedor.getIdioma());
 
         try {
-            texto = reconocedor.vozATexto(new File("src/main/resources/pruebaEs4.ogg"));
+            texto = reconocedor.vozATexto(new File("src/main/resources/pruebaEn4.mp3"));
 
-            if (!(texto == "error") || !(texto == "El archivo recibido no existe\n"))
+            if (!(texto == "error") || !(texto == "El archivo recibido no existe"))
             {
                 respuesta= resumidor.resumirTexto(texto);
 

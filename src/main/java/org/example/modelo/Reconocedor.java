@@ -1,11 +1,14 @@
 package org.example.modelo;
 
 import com.assemblyai.api.AssemblyAI;
+import com.assemblyai.api.core.RequestOptions;
+import com.assemblyai.api.resources.files.types.UploadedFile;
 import com.assemblyai.api.resources.transcripts.types.*;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.example.Enums.EIdioma;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
 
 
 public class Reconocedor {
@@ -121,9 +124,19 @@ public class Reconocedor {
 
             //escucho el audio con los parametros enviados, y retorno toda la transcripcion, para poder resumirlo
             while (intentos < 3 && !exito) {
+                //el bucle fue creado debido que el archivo puede tirar Timeout, por lo que si hay
+                //una excepcion intentamos subir el archivo de nuevo para poder transcribirlo
                 try {
+                    //subimos el archivo al cliente, y aumentamos el tiempo de espera a 30 seg
 
-                    transcripcion = cliente.transcripts().transcribe(archivoRecibido, parametros);
+                    UploadedFile archivoSubido = cliente.files().upload(
+                            Files.readAllBytes(archivoRecibido.toPath()),
+                            RequestOptions.builder()
+                                    .timeout(30)
+                                    .build());
+
+
+                    transcripcion = cliente.transcripts().transcribe(archivoSubido.getUploadUrl(), parametros);
                     exito = true;
                 } catch (RuntimeException e) {
                     intentos++;
@@ -148,6 +161,7 @@ public class Reconocedor {
                 }
             }
             else {
+                //timeout exception
                 mensaje="error";
             }
         }
